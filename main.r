@@ -12,8 +12,10 @@ cleanFun <- function(htmlString) {
 
 
 m <-  mongo("tickets", url = "mongodb://localhost:27017/agile")
-m <- m$find("{}","{}")$description
-# m <- m$find("{}","{}",limit=100)$description
+m <- m$find("{}","{}")
+#m <- m$find("{}","{}",limit=100)
+ 
+m <- paste(m$title,m$description,m$summary,m$comments)
 m <- cleanFun(paste(m,collapse=" "))
 
 docs <- Corpus(VectorSource(m))
@@ -30,17 +32,16 @@ docs <- tm_map(docs, removeWords, stopwords("english"))
 docs <- tm_map(docs, removePunctuation)
 
 junkList <- c(
-"agile",
-"sd",
-"dear",
-"epamcom",
-"epamcomgt",
-"https",
-"please",
-"subject",
-"wwwepamcom",
-"http"
-
+  "agile",
+  "sd",
+  "dear",
+  "epamcom",
+  "epamcomgt",
+  "https",
+  "please",
+  "subject",
+  "wwwepamcom",
+  "http"
 )
 docs <- tm_map(docs, removeWords, junkList)
 docs <- tm_map(docs, stripWhitespace)
